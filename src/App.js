@@ -1,26 +1,27 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useSelector } from 'react-redux';
 
-function App() {
+import useFetchObject from './hooks/useFetchObject';
+import useFetchSection from './hooks/useFetchSection';
+
+const App = () => {
+  const id = 'ce87155f-14b6-46ef-9287-227422024b2e';
+  const { loading } = useFetchObject('project', id);
+  useFetchSection('particle', 'project', id);
+  useFetchSection('fluid', 'project', id);
+
+  const project = useSelector(state => state.project[id]);
+  const fluids = useSelector(state => Object.values(state.fluid).filter(val => val.project === id));
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <p>project: {loading ? 'loading' : 'loaded'}</p>
+      <h1>{project && project.name}</h1>
+      {fluids.map(fluid => (
+        <div key={fluid._uuid}>{fluid.name}</div>
+      ))}
     </div>
   );
-}
+};
 
 export default App;
